@@ -44,6 +44,10 @@
                     background-color: #252525;
                     color: white;
                     cursor: pointer;
+
+                    &:disabled {
+                        opacity: 0.8;
+                    }
                 }
 
                 .error {
@@ -60,7 +64,7 @@
         <form onsubmit="getBill(event)">
             <input type="number" id="acount_number" required placeholder="Account Number">
             <input type="text" id="last_name" required placeholder="Last name">
-            <button>Download Bill</button>
+            <button id="download_btn">Download Bill</button>
             <div class="error"></div>
         </form>
     </div>
@@ -70,40 +74,50 @@
 
         const accountNumber = document.getElementById('account_number')
         const lastName = document.getElementById('last_name')
+        const downloadBtn = document.getElementById('download_btn')
         const error = document.querySelector('.error')
 
         async function getBill(e) {
             e.preventDefault()
+
             error.innerText = ""
 
-            const [{value: acc}, {value: lname}] = e.target
-
-            if(lname.trim() === ''){
-                error.innerText = "Fields cannot be empty"
-                return  
-            }
+            downloadBtn.disabled = true
+            downloadBtn.innerText = "Downloading..."
 
             try {
-                const res = await fetch(`${window.ENV.BILLING_BASE_URL}/0/${acc}/${lname.trim()}?`)
-                const data = await res.text()
+                const [{ value: acc}, { value: lname }] = e.target
 
-                const errorMessage = data.includes('alert') && data.slice(data.indexOf('alert') + 7).slice(0, data.slice(data.indexOf('alert') + 7).indexOf('"'))
-                
-                if(errorMessage) {
-                    error.innerText = errorMessage
+                const res = await fetch('https://getbillingbase-usftn65rrq-uc.a.run.app', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        acc: acc, 
+                        lname: lname
+                    })
+                })
+                const data = await res.json()
+
+                if(data.error) {
+                    error.innerText = data.error
                     return
                 }
 
-                const frame = data.slice(data.indexOf('<iframe'), data.indexOf('</iframe>') - 2)
-                const src = frame.slice(frame.indexOf('src') + 5)
-                const url = src.slice(src.indexOf('url') + 4)
-    
-                const a = document.createElement('a')
-                a.href = url
-                a.click()
+                download(data.url)
             } catch(err) {
-                console.log(err)
+                error.innerText = err
+            } finally {
+                downloadBtn.disabled = false
+                downloadBtn.innerText = "Download Bill"
             }
+        }
+
+        function download(url) {
+            const a = document.createElement('a')
+            a.href = url
+            a.click()
         }
     </script>
 </body>
