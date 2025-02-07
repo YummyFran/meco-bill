@@ -115,10 +115,8 @@
 
         function download(url) {
             const a = document.createElement('a')
-            a.innerText = "Click here to download your bill"
-            a.href = url
-            a.target = "_blank"
-            error.append(a)
+            a.href = url.replace('http', 'https')
+            a.click()
         }
     </script>
 </body>
