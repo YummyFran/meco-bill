@@ -84,7 +84,7 @@
             }
 
             try {
-                const res = await fetch(`${process.env.BILLING_BASE_URL}/0/${acc}/${lname.trim()}?`)
+                const res = await fetch(`${window.ENV.BILLING_BASE_URL}/0/${acc}/${lname.trim()}?`)
                 const data = await res.text()
 
                 const errorMessage = data.includes('alert') && data.slice(data.indexOf('alert') + 7).slice(0, data.slice(data.indexOf('alert') + 7).indexOf('"'))
