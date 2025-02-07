@@ -82,7 +82,7 @@
             error.innerText = ""
 
             downloadBtn.disabled = true
-            downloadBtn.innerText = "Downloading..."
+            downloadBtn.innerText = "Generating link..."
 
             try {
                 const [{ value: acc}, { value: lname }] = e.target
@@ -115,6 +115,7 @@
 
         function download(url) {
             const a = document.createElement('a')
+            a.innerText = "Click here to download your bill"
             a.href = url
             a.target = "_blank"
             error.append(a)
