@@ -1,0 +1,17 @@
+name: Deploy Workflow
+
+on:
+  push:
+    branches:
+      - main  # Runs when code is pushed to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Print Secret Key
+        run: echo "My secret key is ${{ secrets.BILLING_BASE_URL }}"
