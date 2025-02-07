@@ -69,7 +69,6 @@
         </form>
     </div>
 
-    
     <script>
 
         const accountNumber = document.getElementById('account_number')
@@ -117,6 +116,7 @@
         function download(url) {
             const a = document.createElement('a')
             a.href = url
+            a.target = "_blank"
             a.click()
         }
     </script>
